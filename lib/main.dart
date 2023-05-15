@@ -34,7 +34,7 @@ class ThemeDataDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       home: Splash(),
     );
   }

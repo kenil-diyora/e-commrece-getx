@@ -54,9 +54,9 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void localStorage() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-  }
+  // void localStorage() async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  // }
 
   @override
   Widget build(BuildContext context) {
