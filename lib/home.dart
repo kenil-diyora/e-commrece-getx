@@ -14,6 +14,8 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'controller/home_page_controller.dart';
+
 final DecorationTween _tween = DecorationTween(
   begin: const BoxDecoration(
       // color: CupertinoColors.systemYellow,
@@ -53,6 +55,8 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+  // HomePageController controller = Get.put(HomePageController());
 
   // void localStorage() async {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -233,6 +237,7 @@ class _HomeState extends State<Home> {
               //   ColorConstant.secondPrimaryColor =
               //       Colors.blueGrey.shade100;
               // }
+              // controller.localStorage();
               Get.isDarkMode
                   ? Get.changeTheme(
                       ThemeData.light(),
