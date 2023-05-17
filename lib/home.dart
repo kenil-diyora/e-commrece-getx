@@ -16,15 +16,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final DecorationTween _tween = DecorationTween(
   begin: const BoxDecoration(
-    // color: CupertinoColors.systemYellow,
-    // boxShadow: const <BoxShadow>[],
-    // borderRadius: BorderRadius.circular(20.0),
-  ),
+      // color: CupertinoColors.systemYellow,
+      // boxShadow: const <BoxShadow>[],
+      // borderRadius: BorderRadius.circular(20.0),
+      ),
   end: const BoxDecoration(
-    // color: CupertinoColors.systemYellow,
-    // boxShadow: CupertinoContextMenu.kEndBoxShadow,
-    // borderRadius: BorderRadius.circular(20.0),
-  ),
+      // color: CupertinoColors.systemYellow,
+      // boxShadow: CupertinoContextMenu.kEndBoxShadow,
+      // borderRadius: BorderRadius.circular(20.0),
+      ),
 );
 
 class Home extends StatefulWidget {
@@ -60,6 +60,33 @@ class _HomeState extends State<Home> {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
   // }
 
+  List<DocumentSnapshot<Map<String, dynamic>>> productData = [];
+
+  // int itemCount = 10;
+  ScrollController controller = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.addListener(
+      () {
+        // if (controller.offset >= controller.position.maxScrollExtent &&
+        //     !controller.position.outOfRange) {
+        //   itemCount += 10;
+        //   setState(() {});
+        //   print("demo");
+        // } else {}
+        if (controller.position.maxScrollExtent == controller.position.pixels) {
+          // itemCount += 10;
+          // setState(() {});
+          getPageData();
+        }
+      },
+    );
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,10 +104,10 @@ class _HomeState extends State<Home> {
               onTap: () {
                 widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
                     ? Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => AddProduct(),
-                  ),
-                )
+                        CupertinoPageRoute(
+                          builder: (context) => AddProduct(),
+                        ),
+                      )
                     : Navigator.of(context).pop();
               },
               title: widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
@@ -96,38 +123,35 @@ class _HomeState extends State<Home> {
                 // );
                 widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
                     ? Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => const ChatScreen(
-                      receiverId: "User",
-                      name: "User",
-                      senderId: "Admin",
-                    ),
-                  ),
-                )
+                        CupertinoPageRoute(
+                          builder: (context) => const ChatScreen(
+                            receiverId: "User",
+                            name: "User",
+                            senderId: "Admin",
+                          ),
+                        ),
+                      )
                     : Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => const ChatScreen(
-                      receiverId: "Admin",
-                      name: "Admin",
-                      senderId: "User",
-                    ),
-                  ),
-                );
+                        CupertinoPageRoute(
+                          builder: (context) => const ChatScreen(
+                            receiverId: "Admin",
+                            name: "Admin",
+                            senderId: "User",
+                          ),
+                        ),
+                      );
               },
               title: "Chat",
             ),
             widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
-                ? categoryContainer(
-                title: "Orders",
-                onTap: (){}
-            )
+                ? categoryContainer(title: "Orders", onTap: () {})
                 : const SizedBox(),
             categoryContainer(
               onTap: () async {
                 final GoogleSignIn googleSignIn = GoogleSignIn();
                 googleSignIn.signOut();
                 final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
+                    await SharedPreferences.getInstance();
                 prefs.clear();
                 if (context.mounted) {
                   // Navigator.pushAndRemoveUntil(
@@ -167,70 +191,70 @@ class _HomeState extends State<Home> {
         actions: [
           widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
               ? Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => AddProduct(),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: ColorConstant.secondPrimaryColor,
-                ),
-              ),
-              // IconButton(
-              //   onPressed: () {
-              //     Get.isDarkMode
-              //         ? Get.changeTheme(
-              //       ThemeData.light(),
-              //     )
-              //         : Get.changeTheme(
-              //       ThemeData.dark(),
-              //     );
-              //     debugPrint("=== === ==  ${Get.isDarkMode}");
-              //   },
-              //   icon: Icon(
-              //     Icons.light_mode,
-              //     color: ColorConstant.secondPrimaryColor,
-              //   ),
-              // ),
-            ],
-          )
-              : Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => Favorite(uid: widget.uid),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.favorite,
-                  color: ColorConstant.secondPrimaryColor,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => Cart(
-                        uid: widget.uid,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => AddProduct(),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.add,
+                        color: ColorConstant.secondPrimaryColor,
                       ),
                     ),
-                  );
-                },
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: ColorConstant.secondPrimaryColor,
+                    // IconButton(
+                    //   onPressed: () {
+                    //     Get.isDarkMode
+                    //         ? Get.changeTheme(
+                    //       ThemeData.light(),
+                    //     )
+                    //         : Get.changeTheme(
+                    //       ThemeData.dark(),
+                    //     );
+                    //     debugPrint("=== === ==  ${Get.isDarkMode}");
+                    //   },
+                    //   icon: Icon(
+                    //     Icons.light_mode,
+                    //     color: ColorConstant.secondPrimaryColor,
+                    //   ),
+                    // ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => Favorite(uid: widget.uid),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.favorite,
+                        color: ColorConstant.secondPrimaryColor,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => Cart(
+                              uid: widget.uid,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.shopping_cart,
+                        color: ColorConstant.secondPrimaryColor,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
           IconButton(
             onPressed: () async {
               // if (Get.isDarkMode) {
@@ -244,13 +268,13 @@ class _HomeState extends State<Home> {
               // controller.localStorage();
               Get.isDarkMode
                   ? Get.changeTheme(
-                ThemeData.light(),
-              )
+                      ThemeData.light(),
+                    )
                   : Get.changeTheme(
-                ThemeData.dark(),
-              );
+                      ThemeData.dark(),
+                    );
               final SharedPreferences prefs =
-              await SharedPreferences.getInstance();
+                  await SharedPreferences.getInstance();
               prefs.setBool(
                 "theme",
                 Get.isDarkMode,
@@ -273,293 +297,265 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      body: WillPopScope(
-        onWillPop: () async {
-          // _showActionSheet(
-          //   context,
-          //   no: () {
-          //     Navigator.of(context).pop();
-          //     // return false;
-          //   },
-          //   yes: () {},
-          // );
-          return true;
-        },
-        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: FirebaseFirestore.instance.collection('product').snapshots(),
-          builder: (_, snapshot) {
-            if (snapshot.hasError) return Text('Error = ${snapshot.error}');
-            if (snapshot.hasData) {
-              final docs = snapshot.data!.docs;
-              return Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 10,
-                ),
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: docs.length,
-                  itemBuilder: (
-                      BuildContext context,
-                      index,
-                      ) {
-                    var ref = docs[index];
-                    // IconData favorite = Icons.favorite_border;
-                    // void fav() {
-                    //   List fa = [];
-                    //
-                    //   FirebaseFirestore.instance
-                    //       .collection("favorite")
-                    //       .where("uid", isEqualTo: widget.uid)
-                    //       .get()
-                    //       .then(
-                    //     (value) {
-                    //       for (var i in value.docs) {
-                    //         fa.add(i.data());
-                    //       }
-                    //       for (int i = 0; i < fa.length; i++) {
-                    //         if (fa[index]["product"] == ref["product"]) {
-                    //           favorite = Icons.favorite;
-                    //           setState(() {});
-                    //         } else {
-                    //           favorite = Icons.favorite_border;
-                    //           setState(() {});
-                    //         }
-                    //       }
-                    //     },
-                    //   );
-                    // }
+      body: Padding(
+        padding: const EdgeInsets.only(
+          top: 10,
+          bottom: 10,
+        ),
+        child: ListView.builder(
+          controller: controller,
+          physics: const BouncingScrollPhysics(),
+          itemCount: productData.length,
+          itemBuilder: (
+            BuildContext context,
+            index,
+          ) {
+            var ref = productData[index].data()!;
+            // IconData favorite = Icons.favorite_border;
+            // void fav() {
+            //   List fa = [];
+            //
+            //   FirebaseFirestore.instance
+            //       .collection("favorite")
+            //       .where("uid", isEqualTo: widget.uid)
+            //       .get()
+            //       .then(
+            //     (value) {
+            //       for (var i in value.docs) {
+            //         fa.add(i.data());
+            //       }
+            //       for (int i = 0; i < fa.length; i++) {
+            //         if (fa[index]["product"] == ref["product"]) {
+            //           favorite = Icons.favorite;
+            //           setState(() {});
+            //         } else {
+            //           favorite = Icons.favorite_border;
+            //           setState(() {});
+            //         }
+            //       }
+            //     },
+            //   );
+            // }
 
-                    return CupertinoContextMenu.builder(
-                      actions: widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
-                          ? [
-                        CupertinoContextMenuAction(
-                          onPressed: () {
-                            addToCart(
-                                product: ref["product"],
-                                image: ref["image"],
-                                mrp: ref["mrp"],
-                                salePrice: ref["salePrice"]);
-                            Navigator.pop(context);
-                          },
-                          isDefaultAction: true,
-                          trailingIcon: Icons.edit,
-                          child: const Text(
-                            "Edit product",
-                          ),
-                        ),
-                        CupertinoContextMenuAction(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return removeCartDialog(
-                                  context,
-                                  ref,
-                                  collectionName: "product",
-                                );
-                              },
-                            );
-                          },
-                          isDestructiveAction: true,
-                          trailingIcon: CupertinoIcons.delete_solid,
-                          child: const Text(
-                            "Delete product",
-                          ),
-                        ),
-                      ]
-                          : [
-                        CupertinoContextMenuAction(
-                          onPressed: () {
-                            addToCart(
-                                product: ref["product"],
-                                image: ref["image"],
-                                mrp: ref["mrp"],
-                                salePrice: ref["salePrice"]);
-                            Navigator.pop(context);
-                          },
-                          isDefaultAction: true,
-                          trailingIcon: CupertinoIcons.cart_fill,
-                          child: const Text(
-                            "Add to cart",
-                          ),
-                        ),
-                        CupertinoContextMenuAction(
-                          onPressed: () {
-                            addToFavorite(
-                              salePrice: ref["salePrice"],
-                              mrp: ref["mrp"],
-                              image: ref["image"],
+            return CupertinoContextMenu.builder(
+              actions: widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
+                  ? [
+                      CupertinoContextMenuAction(
+                        onPressed: () {
+                          addToCart(
                               product: ref["product"],
-                            );
-                            Navigator.pop(context);
-                          },
-                          isDestructiveAction: true,
-                          trailingIcon: CupertinoIcons.heart_fill,
-                          child: const Text(
-                            "Add to favorite",
-                          ),
+                              image: ref["image"],
+                              mrp: ref["mrp"],
+                              salePrice: ref["salePrice"]);
+                          Navigator.pop(context);
+                        },
+                        isDefaultAction: true,
+                        trailingIcon: Icons.edit,
+                        child: const Text(
+                          "Edit product",
                         ),
-                      ],
-                      builder:
-                          (BuildContext context, Animation<double> animation) {
-                        final Animation<Decoration> boxDecorationAnimation =
-                        _boxDecorationAnimation(animation);
-
-                        return Container(
-                          decoration: animation.value <
-                              CupertinoContextMenu.animationOpensAt
-                              ? boxDecorationAnimation.value
-                              : null,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) => ProductDetail(
-                                    image: ref["image"],
-                                    product: ref["product"],
-                                    salePrice: ref["salePrice"],
-                                    mrp: ref["mrp"],
-                                  ),
-                                ),
+                      ),
+                      CupertinoContextMenuAction(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return removeCartDialog(
+                                context,
+                                productData[index],
+                                collectionName: "product",
+                                dataList: productData,
+                                index: index,
                               );
                             },
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.all(10),
-                                    padding: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: ColorConstant.primaryColor,
+                          ).whenComplete(() => setState(() {}));
+                        },
+                        isDestructiveAction: true,
+                        trailingIcon: CupertinoIcons.delete_solid,
+                        child: const Text(
+                          "Delete product",
+                        ),
+                      ),
+                    ]
+                  : [
+                      CupertinoContextMenuAction(
+                        onPressed: () {
+                          addToCart(
+                              product: ref["product"],
+                              image: ref["image"],
+                              mrp: ref["mrp"],
+                              salePrice: ref["salePrice"]);
+                          Navigator.pop(context);
+                        },
+                        isDefaultAction: true,
+                        trailingIcon: CupertinoIcons.cart_fill,
+                        child: const Text(
+                          "Add to cart",
+                        ),
+                      ),
+                      CupertinoContextMenuAction(
+                        onPressed: () {
+                          addToFavorite(
+                            salePrice: ref["salePrice"],
+                            mrp: ref["mrp"],
+                            image: ref["image"],
+                            product: ref["product"],
+                          );
+                          Navigator.pop(context);
+                        },
+                        isDestructiveAction: true,
+                        trailingIcon: CupertinoIcons.heart_fill,
+                        child: const Text(
+                          "Add to favorite",
+                        ),
+                      ),
+                    ],
+              builder: (BuildContext context, Animation<double> animation) {
+                final Animation<Decoration> boxDecorationAnimation =
+                    _boxDecorationAnimation(animation);
+
+                return Container(
+                  decoration:
+                      animation.value < CupertinoContextMenu.animationOpensAt
+                          ? boxDecorationAnimation.value
+                          : null,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => ProductDetail(
+                            image: ref["image"],
+                            product: ref["product"],
+                            salePrice: ref["salePrice"],
+                            mrp: ref["mrp"],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Stack(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: ColorConstant.primaryColor,
+                            ),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    ref["image"],
+                                    height: 150,
+                                    width: 150,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 15,
                                     ),
-                                    child: Row(
+                                    child: Column(
                                       children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          child: Image.network(
-                                            ref["image"],
-                                            height: 150,
-                                            width: 150,
+                                        Text(
+                                          ref["product"],
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                            color: ColorConstant
+                                                .secondPrimaryColor,
                                           ),
                                         ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 15,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  ref["product"],
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "${ref["salePrice"].toString()}  ",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: ColorConstant
+                                                      .secondPrimaryColor,
+                                                ),
+                                              ),
+                                              Text(
+                                                ref["mrp"].toString(),
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: ColorConstant
+                                                      .secondPrimaryColor,
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        widget.uid !=
+                                                "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
+                                            ? TextButton(
+                                                onPressed: () {
+                                                  addToCart(
+                                                    image: ref["image"],
+                                                    mrp: ref["mrp"],
+                                                    product: ref["product"],
+                                                    salePrice: ref["salePrice"],
+                                                  );
+                                                },
+                                                style: TextButton.styleFrom(
+                                                  backgroundColor: ColorConstant
+                                                      .secondPrimaryColor,
+                                                ),
+                                                child: Text(
+                                                  "Add to cart",
                                                   style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w700,
                                                     color: ColorConstant
-                                                        .secondPrimaryColor,
+                                                        .primaryColor,
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 10,
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        "${ref["salePrice"].toString()}  ",
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: ColorConstant
-                                                              .secondPrimaryColor,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        ref["mrp"].toString(),
-                                                        style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: ColorConstant
-                                                              .secondPrimaryColor,
-                                                          decoration:
-                                                          TextDecoration
-                                                              .lineThrough,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                widget.uid !=
-                                                    "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
-                                                    ? TextButton(
-                                                  onPressed: () {
-                                                    addToCart(
-                                                      image: ref["image"],
-                                                      mrp: ref["mrp"],
-                                                      product:
-                                                      ref["product"],
-                                                      salePrice: ref[
-                                                      "salePrice"],
-                                                    );
-                                                  },
-                                                  style: TextButton
-                                                      .styleFrom(
-                                                    backgroundColor:
-                                                    ColorConstant
-                                                        .secondPrimaryColor,
-                                                  ),
-                                                  child: Text(
-                                                    "Add to cart",
-                                                    style: TextStyle(
-                                                      color: ColorConstant
-                                                          .primaryColor,
-                                                    ),
-                                                  ),
-                                                )
-                                                    : const SizedBox(),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
+                                              )
+                                            : const SizedBox(),
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 10,
-                                      left: 10,
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        addToFavorite(
-                                          salePrice: ref["salePrice"],
-                                          mrp: ref["mrp"],
-                                          image: ref["image"],
-                                          product: ref["product"],
-                                        );
-                                      },
-                                      icon: Icon(
-                                        Icons.favorite_border,
-                                        // favorite,
-                                        color: ColorConstant.primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              left: 10,
+                            ),
+                            child: IconButton(
+                              onPressed: () {
+                                addToFavorite(
+                                  salePrice: ref["salePrice"],
+                                  mrp: ref["mrp"],
+                                  image: ref["image"],
+                                  product: ref["product"],
+                                );
+                              },
+                              icon: Icon(
+                                Icons.favorite_border,
+                                // favorite,
+                                color: ColorConstant.primaryColor,
                               ),
                             ),
                           ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              );
-            }
-            return const Center(child: CircularProgressIndicator());
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
           },
         ),
       ),
@@ -579,7 +575,7 @@ class _HomeState extends State<Home> {
         .where("product", isEqualTo: product)
         .get()
         .then(
-          (value) {
+      (value) {
         for (var itemFavorite in value.docs) {
           tempItemFavoriteList.add(
             itemFavorite.data(),
@@ -686,7 +682,7 @@ class _HomeState extends State<Home> {
         .where("product", isEqualTo: product)
         .get()
         .then(
-          (value) {
+      (value) {
         for (var cartInformation in value.docs) {
           tempCartList.add(cartInformation.data());
         }
@@ -793,4 +789,30 @@ class _HomeState extends State<Home> {
   //   );
   // }
 
+  void getData() {
+    FirebaseFirestore.instance.collection("product").limit(5).get().then(
+      (value) {
+        for (var i in value.docs) {
+          productData.add(i);
+        }
+        setState(() {});
+      },
+    );
+  }
+
+  void getPageData() {
+    FirebaseFirestore.instance
+        .collection("product")
+        .startAfterDocument(productData[productData.length - 1])
+        .limit(5)
+        .get()
+        .then(
+      (value) {
+        for (var i in value.docs) {
+          productData.add(i);
+        }
+        setState(() {});
+      },
+    );
+  }
 }

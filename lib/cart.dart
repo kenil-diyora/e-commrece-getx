@@ -598,6 +598,8 @@ CupertinoAlertDialog removeCartDialog(
   BuildContext context,
   DocumentSnapshot<Map<String, dynamic>> ref, {
   String? collectionName,
+  List? dataList,
+  int? index,
 }) {
   return CupertinoAlertDialog(
     title: Text(
@@ -624,6 +626,7 @@ CupertinoAlertDialog removeCartDialog(
               .collection(collectionName!)
               .doc(ref.id)
               .delete();
+          dataList?.removeAt(index!);
           Navigator.of(context).pop();
         },
         child: Text(
