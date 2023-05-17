@@ -506,6 +506,33 @@ class _CartState extends State<Cart> {
           if (kDebugMode) {
             print('payment intent$paymentIntentData');
           }
+
+          debugPrint(
+              "======================================= success payment ===============");
+          FirebaseFirestore.instance
+              .collection("cart")
+              .where("uid", isEqualTo: widget.uid)
+              .get()
+              .then(
+            (value) {
+              for (var i in value.docs) {
+                FirebaseFirestore.instance
+                    .collection("cart")
+                    .doc(i.id)
+                    .delete();
+                FirebaseFirestore.instance.collection("order_summary").add(
+                  {
+                    "uid": widget.uid,
+                    "image": i.data()["image"],
+                    "mrp": i.data()["mrp"],
+                    "product": i.data()["product"],
+                    "qty": i.data()["qty"],
+                    "salePrice": i.data()["salePrice"],
+                  },
+                );
+              }
+            },
+          );
         },
       ).onError(
         (error, stackTrace) {
@@ -552,6 +579,7 @@ class _CartState extends State<Cart> {
       if (kDebugMode) {
         print('Create Intent reponse ===> ${response.body.toString()}');
       }
+
       return jsonDecode(response.body);
     } catch (err) {
       if (kDebugMode) {
@@ -568,7 +596,7 @@ class _CartState extends State<Cart> {
 
 CupertinoAlertDialog removeCartDialog(
   BuildContext context,
-  QueryDocumentSnapshot<Map<String, dynamic>> ref, {
+  DocumentSnapshot<Map<String, dynamic>> ref, {
   String? collectionName,
 }) {
   return CupertinoAlertDialog(

@@ -1,4 +1,3 @@
-import 'package:e_commerce/pagination_demo.dart';
 import 'package:e_commerce/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,7 @@ class ThemeDataDemo extends StatelessWidget {
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
-      home: Pagination(),
+      home: Splash(),
     );
   }
 }

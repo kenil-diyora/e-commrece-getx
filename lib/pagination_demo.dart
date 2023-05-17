@@ -9,28 +9,30 @@ class Pagination extends StatefulWidget {
 }
 
 class _PaginationState extends State<Pagination> {
-  List productData = [];
-  int itemCount = 10;
+  List<DocumentSnapshot<Map<String, dynamic>>> productData = [];
+
+  // int itemCount = 10;
   ScrollController controller = ScrollController();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // controller.addListener(
-    //   () {
-    //     // if (controller.offset >= controller.position.maxScrollExtent &&
-    //     //     !controller.position.outOfRange) {
-    //     //   itemCount += 10;
-    //     //   setState(() {});
-    //     //   print("demo");
-    //     // } else {}
-    //     if (controller.position.maxScrollExtent == controller.position.pixels) {
-    //       itemCount += 10;
-    //       setState(() {});
-    //     }
-    //   },
-    // );
+    controller.addListener(
+      () {
+        // if (controller.offset >= controller.position.maxScrollExtent &&
+        //     !controller.position.outOfRange) {
+        //   itemCount += 10;
+        //   setState(() {});
+        //   print("demo");
+        // } else {}
+        if (controller.position.maxScrollExtent == controller.position.pixels) {
+          // itemCount += 10;
+          // setState(() {});
+          getPageData();
+        }
+      },
+    );
     getData();
   }
 
@@ -52,11 +54,12 @@ class _PaginationState extends State<Pagination> {
       body: ListView.builder(
         physics: const BouncingScrollPhysics(),
         itemCount: productData.length,
-        // controller: controller,
+        controller: controller,
         itemBuilder: (
           BuildContext context,
           index,
         ) {
+          var res = productData[index].data()!;
           return Container(
             margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.all(10),
@@ -70,7 +73,7 @@ class _PaginationState extends State<Pagination> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                    productData[index]["image"],
+                    res["image"],
                     height: 150,
                     width: 150,
                   ),
@@ -79,15 +82,15 @@ class _PaginationState extends State<Pagination> {
                   child: Column(
                     children: [
                       Text(
-                        productData[index]["product"],
+                        res["product"],
                       ),
                       Row(
                         children: [
                           Text(
-                            "${productData[index]["salePrice"].toString()}  ",
+                            "${res["salePrice"].toString()}  ",
                           ),
                           Text(
-                            productData[index]["mrp"].toString(),
+                            res["mrp"].toString(),
                             style: const TextStyle(
                               decoration: TextDecoration.lineThrough,
                             ),
@@ -106,13 +109,26 @@ class _PaginationState extends State<Pagination> {
   }
 
   void getData() {
-    FirebaseFirestore.instance.collection("product").get().then(
+    FirebaseFirestore.instance.collection("product").limit(5).get().then(
       (value) {
         for (var i in value.docs) {
-          productData.add(i.data());
-          debugPrint(
-            "${productData[0]["image"]}",
-          );
+          productData.add(i);
+        }
+        setState(() {});
+      },
+    );
+  }
+
+  void getPageData() {
+    FirebaseFirestore.instance
+        .collection("product")
+        .startAfterDocument(productData[productData.length - 1])
+        .limit(5)
+        .get()
+        .then(
+      (value) {
+        for (var i in value.docs) {
+          productData.add(i);
         }
         setState(() {});
       },
