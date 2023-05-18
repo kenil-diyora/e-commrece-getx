@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../translator.dart';
 import 'color_constant.dart';
 
 Widget categoryContainer({
@@ -22,8 +23,8 @@ Widget categoryContainer({
         borderRadius: BorderRadius.circular(10),
       ),
       alignment: Alignment.center,
-      child: Text(
-        "$title",
+      child: textToTrans(
+        input: "$title",
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,

@@ -55,6 +55,8 @@ dependencies:
   shared_preferences: ^2.1.1
   flutter_local_notifications: ^14.0.0+1
   firebase_messaging: ^14.5.0
+  translator: ^0.1.7
+  language_picker: ^0.4.3
 
 dev_dependencies:
   flutter_test:

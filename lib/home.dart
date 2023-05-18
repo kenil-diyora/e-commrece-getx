@@ -146,6 +146,19 @@ class _HomeState extends State<Home> {
             widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
                 ? categoryContainer(title: "Orders", onTap: () {})
                 : const SizedBox(),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //     vertical: 10,
+            //   ),
+            //   child: textToTrans(
+            //     input: 'Hello',
+            //     style: null,
+            //   ),
+            // ),
+            categoryContainer(
+              onTap: () {},
+              title: "Hello",
+            ),
             categoryContainer(
               onTap: () async {
                 final GoogleSignIn googleSignIn = GoogleSignIn();

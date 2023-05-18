@@ -156,9 +156,11 @@
 // }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce/config/language.dart';
 import 'package:e_commerce/controller/sign_up_page_controller.dart';
 import 'package:e_commerce/login.dart';
 import 'package:e_commerce/phone_number.dart';
+import 'package:e_commerce/translator.dart';
 import 'package:e_commerce/widget/color_constant.dart';
 import 'package:e_commerce/widget/show_loading_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -185,6 +187,31 @@ class _SignUPState extends State<SignUP> {
   // TextEditingController? email = TextEditingController();
   // TextEditingController? password = TextEditingController();
   // TextEditingController? confirmPassword = TextEditingController();
+
+  List fevList = [];
+  List remainList = [];
+  String? languageCode;
+
+  void languageData() {
+    fevList = language.where(
+      (element) {
+        return element['Favorite'] == true;
+      },
+    ).toList();
+
+    remainList = language.where(
+      (element) {
+        return element['Favorite'] != true;
+      },
+    ).toList();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    languageData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -340,78 +367,373 @@ class _SignUPState extends State<SignUP> {
                               ),
                             ),
                             onPressed: () async {
-                              if (controller.key.currentState!.validate()) {
-                                try {
-                                  final credential = await FirebaseAuth.instance
-                                      .createUserWithEmailAndPassword(
-                                    email: controller.email.value.text,
-                                    password: controller.password.value.text,
-                                  );
-                                  if (mounted) {}
-                                  Navigator.of(context).push(
-                                    CupertinoPageRoute(
-                                      builder: (context) => const Login(),
+                              showModalBottomSheet<void>(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(30),
+                                      ),
+                                      color: ColorConstant.primaryColor,
+                                    ),
+                                    child: SingleChildScrollView(
+                                      physics: const BouncingScrollPhysics(),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Row(
+                                            children: [
+                                              const TextButton(
+                                                onPressed: null,
+                                                child: Text(
+                                                  "Skip",
+                                                  style: TextStyle(
+                                                    color: Colors.transparent,
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: textToTrans(
+                                                  input: 'Select language',
+                                                  isCenterText: true,
+                                                  style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: ColorConstant
+                                                        .secondPrimaryColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {},
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        right: 0,
+                                                      ),
+                                                      child: textToTrans(
+                                                        input: "Skip ",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                          color: ColorConstant
+                                                              .secondPrimaryColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Icon(
+                                                      Icons.arrow_right_alt,
+                                                      size: 15,
+                                                      color: ColorConstant
+                                                          .secondPrimaryColor,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                              ),
+                                              child: textToTrans(
+                                                input: "Popular language",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: ColorConstant
+                                                      .secondPrimaryColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: fevList.length,
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  languageCode =
+                                                      fevList[index]["code"];
+                                                  SharedPreferences pref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  pref.setString("language",
+                                                      languageCode!);
+                                                  setState(() {});
+                                                },
+                                                child: Container(
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                    vertical: 8,
+                                                  ),
+                                                  padding: const EdgeInsets.all(
+                                                    15,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      10,
+                                                    ),
+                                                    color: ColorConstant
+                                                        .secondPrimaryColor,
+                                                  ),
+                                                  child: Text(
+                                                    fevList[index]["language"],
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: ColorConstant
+                                                          .primaryColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                              ),
+                                              child: textToTrans(
+                                                input: "Other language",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: ColorConstant
+                                                      .secondPrimaryColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: remainList.length,
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                onTap: () async {
+                                                  languageCode =
+                                                      remainList[index]["code"];
+                                                  SharedPreferences pref =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  pref.setString("language",
+                                                      languageCode!);
+                                                  setState(() {});
+                                                },
+                                                child: Container(
+                                                  margin: const EdgeInsets
+                                                      .symmetric(
+                                                    vertical: 8,
+                                                  ),
+                                                  padding: const EdgeInsets.all(
+                                                    15,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      10,
+                                                    ),
+                                                    color: ColorConstant
+                                                        .secondPrimaryColor,
+                                                  ),
+                                                  child: Text(
+                                                    remainList[index]
+                                                        ["language"],
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: ColorConstant
+                                                          .primaryColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   );
-                                  FirebaseFirestore.instance
-                                      .collection("user")
-                                      .doc(credential.user!.uid)
-                                      .set(
-                                    {
-                                      "email": credential.user!.email,
-                                      "phone": credential.user!.phoneNumber,
-                                      "photo": credential.user!.photoURL,
-                                      "uid": credential.user!.uid,
-                                    },
-                                  );
-                                  Fluttertoast.showToast(
-                                    msg: "Sign up successfully",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: ColorConstant.primaryColor,
-                                    textColor: ColorConstant.secondPrimaryColor,
-                                    fontSize: 16.0,
-                                  );
-                                  final SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  prefs.setString(
-                                    "uid",
-                                    credential.user!.uid,
-                                  );
-                                } on FirebaseAuthException catch (e) {
-                                  if (e.code == 'weak-password') {
-                                    Fluttertoast.showToast(
-                                      msg: "The password provided is too weak.",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor:
-                                          ColorConstant.primaryColor,
-                                      textColor:
-                                          ColorConstant.secondPrimaryColor,
-                                      fontSize: 16.0,
-                                    );
-                                  } else if (e.code == 'email-already-in-use') {
-                                    Fluttertoast.showToast(
-                                      msg:
-                                          "The account already exists for that email.",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor:
-                                          ColorConstant.primaryColor,
-                                      textColor:
-                                          ColorConstant.secondPrimaryColor,
-                                      fontSize: 16.0,
-                                    );
-                                  }
-                                } catch (e) {
-                                  if (kDebugMode) {
-                                    print(e);
-                                  }
-                                }
-                              }
+                                },
+                              );
+                              // if (controller.key.currentState!.validate()) {
+                              //   try {
+                              //     final credential = await FirebaseAuth.instance
+                              //         .createUserWithEmailAndPassword(
+                              //       email: controller.email.value.text,
+                              //       password: controller.password.value.text,
+                              //     );
+                              //     if (mounted) {
+                              //       showModalBottomSheet<void>(
+                              //         context: context,
+                              //         builder: (BuildContext context) {
+                              //           return Container(
+                              //             padding: const EdgeInsets.all(20),
+                              //             color: ColorConstant.primaryColor,
+                              //             child: Column(
+                              //               mainAxisSize: MainAxisSize.min,
+                              //               children: <Widget>[
+                              //                 Padding(
+                              //                   padding: const EdgeInsets.only(
+                              //                     bottom: 15,
+                              //                   ),
+                              //                   child: textToTrans(
+                              //                     input: 'Select language',
+                              //                     style: TextStyle(
+                              //                       fontSize: 24,
+                              //                       fontWeight: FontWeight.w700,
+                              //                       color: ColorConstant
+                              //                           .secondPrimaryColor,
+                              //                     ),
+                              //                   ),
+                              //                 ),
+                              //                 textToTrans(
+                              //                   input: "Popular language",
+                              //                   style: TextStyle(
+                              //                     fontSize: 18,
+                              //                     fontWeight: FontWeight.w700,
+                              //                     color: ColorConstant
+                              //                         .secondPrimaryColor,
+                              //                   ),
+                              //                 ),
+                              //                 ListView.builder(
+                              //                   shrinkWrap: true,
+                              //                   itemCount: language.length,
+                              //                   itemBuilder: (context, index) {
+                              //                     return Container(
+                              //                       margin:
+                              //                           const EdgeInsets.all(
+                              //                         8,
+                              //                       ),
+                              //                       padding:
+                              //                           const EdgeInsets.all(
+                              //                         15,
+                              //                       ),
+                              //                       decoration: BoxDecoration(
+                              //                         borderRadius:
+                              //                             BorderRadius.circular(
+                              //                           10,
+                              //                         ),
+                              //                         color: ColorConstant
+                              //                             .secondPrimaryColor,
+                              //                       ),
+                              //                       child: textToTrans(
+                              //                         input: language[index]
+                              //                             ["language"],
+                              //                         style: TextStyle(
+                              //                           fontSize: 16,
+                              //                           fontWeight:
+                              //                               FontWeight.w500,
+                              //                           color: ColorConstant
+                              //                               .primaryColor,
+                              //                         ),
+                              //                       ),
+                              //                     );
+                              //                   },
+                              //                 ),
+                              //                 TextButton(
+                              //                   child: const Text(
+                              //                     "Skip",
+                              //                   ),
+                              //                   onPressed: () {
+                              //                     Navigator.of(context).push(
+                              //                       CupertinoPageRoute(
+                              //                         builder: (context) =>
+                              //                             const Login(),
+                              //                       ),
+                              //                     );
+                              //                     Fluttertoast.showToast(
+                              //                       msg: "Sign up successfully",
+                              //                       toastLength:
+                              //                           Toast.LENGTH_SHORT,
+                              //                       gravity:
+                              //                           ToastGravity.BOTTOM,
+                              //                       timeInSecForIosWeb: 1,
+                              //                       backgroundColor:
+                              //                           ColorConstant
+                              //                               .primaryColor,
+                              //                       textColor: ColorConstant
+                              //                           .secondPrimaryColor,
+                              //                       fontSize: 16.0,
+                              //                     );
+                              //                   },
+                              //                 ),
+                              //               ],
+                              //             ),
+                              //           );
+                              //         },
+                              //       );
+                              //     }
+                              //     FirebaseFirestore.instance
+                              //         .collection("user")
+                              //         .doc(credential.user!.uid)
+                              //         .set(
+                              //       {
+                              //         "email": credential.user!.email,
+                              //         "phone": credential.user!.phoneNumber,
+                              //         "photo": credential.user!.photoURL,
+                              //         "uid": credential.user!.uid,
+                              //       },
+                              //     );
+                              //
+                              //     final SharedPreferences prefs =
+                              //         await SharedPreferences.getInstance();
+                              //     prefs.setString(
+                              //       "uid",
+                              //       credential.user!.uid,
+                              //     );
+                              //   } on FirebaseAuthException catch (e) {
+                              //     if (e.code == 'weak-password') {
+                              //       Fluttertoast.showToast(
+                              //         msg: "The password provided is too weak.",
+                              //         toastLength: Toast.LENGTH_SHORT,
+                              //         gravity: ToastGravity.BOTTOM,
+                              //         timeInSecForIosWeb: 1,
+                              //         backgroundColor:
+                              //             ColorConstant.primaryColor,
+                              //         textColor:
+                              //             ColorConstant.secondPrimaryColor,
+                              //         fontSize: 16.0,
+                              //       );
+                              //     } else if (e.code == 'email-already-in-use') {
+                              //       Fluttertoast.showToast(
+                              //         msg:
+                              //             "The account already exists for that email.",
+                              //         toastLength: Toast.LENGTH_SHORT,
+                              //         gravity: ToastGravity.BOTTOM,
+                              //         timeInSecForIosWeb: 1,
+                              //         backgroundColor:
+                              //             ColorConstant.primaryColor,
+                              //         textColor:
+                              //             ColorConstant.secondPrimaryColor,
+                              //         fontSize: 16.0,
+                              //       );
+                              //     }
+                              //   } catch (e) {
+                              //     if (kDebugMode) {
+                              //       print(e);
+                              //     }
+                              //   }
+                              // }
                             },
                             child: const Text(
                               "Sign up",
@@ -547,15 +869,16 @@ class _SignUPState extends State<SignUP> {
                 "photo": FirebaseAuth.instance.currentUser?.photoURL,
               },
             );
-            if (mounted) {}
-            hideDialog(context);
-            Navigator.of(context).push(
-              CupertinoPageRoute(
-                builder: (context) => Home(
-                  uid: FirebaseAuth.instance.currentUser?.uid,
+            if (mounted) {
+              hideDialog(context);
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => Home(
+                    uid: FirebaseAuth.instance.currentUser?.uid,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
             prefs.setString(
@@ -563,15 +886,16 @@ class _SignUPState extends State<SignUP> {
               "${FirebaseAuth.instance.currentUser?.uid}",
             );
           } else {
-            if (mounted) {}
-            hideDialog(context);
-            Navigator.of(context).push(
-              CupertinoPageRoute(
-                builder: (context) => Home(
-                  uid: FirebaseAuth.instance.currentUser?.uid,
+            if (mounted) {
+              hideDialog(context);
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => Home(
+                    uid: FirebaseAuth.instance.currentUser?.uid,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
             prefs.setString(
@@ -581,8 +905,9 @@ class _SignUPState extends State<SignUP> {
           }
         }
       } else {
-        if (mounted) {}
-        hideDialog(context);
+        if (mounted) {
+          hideDialog(context);
+        }
       }
     } catch (e) {
       hideDialog(context);
