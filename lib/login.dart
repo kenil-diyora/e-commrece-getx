@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/controller/login_page_controller.dart';
 import 'package:e_commerce/phone_number.dart';
 import 'package:e_commerce/sign_up.dart';
+import 'package:e_commerce/translator.dart';
 import 'package:e_commerce/widget/color_constant.dart';
 import 'package:e_commerce/widget/show_loading_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,8 +44,8 @@ class _LoginState extends State<Login> {
                 height: MediaQuery.of(context).size.height / 3,
                 padding: const EdgeInsets.all(50),
                 alignment: Alignment.bottomLeft,
-                child: Text(
-                  "Login",
+                child: textToTrans(
+                  input: "Login",
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w700,
@@ -85,9 +86,9 @@ class _LoginState extends State<Login> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Email",
-                            style: TextStyle(
+                          textToTrans(
+                            input: "Email",
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
@@ -115,9 +116,9 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          const Text(
-                            "Password",
-                            style: TextStyle(
+                          textToTrans(
+                            input: "Password",
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
@@ -216,8 +217,9 @@ class _LoginState extends State<Login> {
                                 }
                               }
                             },
-                            child: const Text(
-                              "Login",
+                            child: textToTrans(
+                              input: "Login",
+                              style: null,
                             ),
                           ),
                           Row(
@@ -281,8 +283,8 @@ class _LoginState extends State<Login> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Text(
-                                "Need an account?",
+                              textToTrans(
+                                input: "Need an account?",
                                 style: TextStyle(
                                   color: ColorConstant.primaryColor,
                                 ),
@@ -295,10 +297,11 @@ class _LoginState extends State<Login> {
                                     ),
                                   );
                                 },
-                                child: Text(
-                                  "SIGN UP",
+                                child: textToTrans(
+                                  input: "SIGN UP",
                                   style: TextStyle(
                                     color: ColorConstant.primaryColor,
+                                    fontWeight: FontWeight.w700,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

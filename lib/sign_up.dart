@@ -158,14 +158,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/config/language.dart';
 import 'package:e_commerce/controller/sign_up_page_controller.dart';
-import 'package:e_commerce/login.dart';
 import 'package:e_commerce/phone_number.dart';
 import 'package:e_commerce/translator.dart';
 import 'package:e_commerce/widget/color_constant.dart';
 import 'package:e_commerce/widget/show_loading_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -188,29 +186,12 @@ class _SignUPState extends State<SignUP> {
   // TextEditingController? password = TextEditingController();
   // TextEditingController? confirmPassword = TextEditingController();
 
-  List fevList = [];
-  List remainList = [];
-  String? languageCode;
-
-  void languageData() {
-    fevList = language.where(
-      (element) {
-        return element['Favorite'] == true;
-      },
-    ).toList();
-
-    remainList = language.where(
-      (element) {
-        return element['Favorite'] != true;
-      },
-    ).toList();
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     languageData();
+    getCurrentLanguage();
   }
 
   @override
@@ -226,8 +207,8 @@ class _SignUPState extends State<SignUP> {
                 height: MediaQuery.of(context).size.height / 3,
                 padding: const EdgeInsets.all(50),
                 alignment: Alignment.bottomLeft,
-                child: Text(
-                  "Sign Up",
+                child: textToTrans(
+                  input: "Sign Up",
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w700,
@@ -268,9 +249,9 @@ class _SignUPState extends State<SignUP> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Email",
-                            style: TextStyle(
+                          textToTrans(
+                            input: "Email",
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
@@ -298,9 +279,9 @@ class _SignUPState extends State<SignUP> {
                               ),
                             ),
                           ),
-                          const Text(
-                            "Password",
-                            style: TextStyle(
+                          textToTrans(
+                            input: "Password",
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
@@ -328,9 +309,9 @@ class _SignUPState extends State<SignUP> {
                               ),
                             ),
                           ),
-                          const Text(
-                            "Confirm password",
-                            style: TextStyle(
+                          textToTrans(
+                            input: "Confirm password",
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
@@ -367,376 +348,402 @@ class _SignUPState extends State<SignUP> {
                               ),
                             ),
                             onPressed: () async {
-                              showModalBottomSheet<void>(
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    padding: const EdgeInsets.all(20),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(30),
-                                      ),
-                                      color: ColorConstant.primaryColor,
-                                    ),
-                                    child: SingleChildScrollView(
-                                      physics: const BouncingScrollPhysics(),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Row(
-                                            children: [
-                                              const TextButton(
-                                                onPressed: null,
-                                                child: Text(
-                                                  "Skip",
-                                                  style: TextStyle(
-                                                    color: Colors.transparent,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: textToTrans(
-                                                  input: 'Select language',
-                                                  isCenterText: true,
-                                                  style: TextStyle(
-                                                    fontSize: 24,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: ColorConstant
-                                                        .secondPrimaryColor,
-                                                  ),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {},
-                                                child: Row(
+                              if (controller.key.currentState!.validate()) {
+                                try {
+                                  final credential = await FirebaseAuth.instance
+                                      .createUserWithEmailAndPassword(
+                                    email: controller.email.value.text,
+                                    password: controller.password.value.text,
+                                  );
+                                  if (mounted) {
+                                    showModalBottomSheet<void>(
+                                      backgroundColor: Colors.transparent,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                          padding: const EdgeInsets.all(20),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.vertical(
+                                              top: Radius.circular(30),
+                                            ),
+                                            color: ColorConstant.primaryColor,
+                                          ),
+                                          child: SingleChildScrollView(
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Row(
                                                   children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 0,
-                                                      ),
+                                                    Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                            right: 0,
+                                                          ),
+                                                          child: textToTrans(
+                                                            input: "Skip ",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                              color: Colors
+                                                                  .transparent,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const Icon(
+                                                          Icons.arrow_right_alt,
+                                                          size: 15,
+                                                          color: Colors
+                                                              .transparent,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Expanded(
                                                       child: textToTrans(
-                                                        input: "Skip ",
+                                                        input:
+                                                            'Select language',
+                                                        isCenterText: true,
                                                         style: TextStyle(
-                                                          fontSize: 16,
+                                                          fontSize: 24,
                                                           fontWeight:
-                                                              FontWeight.w300,
+                                                              FontWeight.w700,
                                                           color: ColorConstant
                                                               .secondPrimaryColor,
                                                         ),
                                                       ),
                                                     ),
-                                                    Icon(
-                                                      Icons.arrow_right_alt,
-                                                      size: 15,
-                                                      color: ColorConstant
-                                                          .secondPrimaryColor,
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.of(context)
+                                                            .push(
+                                                          CupertinoPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    Home(
+                                                              uid: credential
+                                                                  .user!.uid,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                              right: 0,
+                                                            ),
+                                                            child: textToTrans(
+                                                              input: "Skip ",
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300,
+                                                                color: ColorConstant
+                                                                    .secondPrimaryColor,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Icon(
+                                                            Icons
+                                                                .arrow_right_alt,
+                                                            size: 15,
+                                                            color: ColorConstant
+                                                                .secondPrimaryColor,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 10,
-                                              ),
-                                              child: textToTrans(
-                                                input: "Popular language",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: ColorConstant
-                                                      .secondPrimaryColor,
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 10,
+                                                    ),
+                                                    child: textToTrans(
+                                                      input: "Popular language",
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: ColorConstant
+                                                            .secondPrimaryColor,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
+                                                ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount: fevList.length,
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return GestureDetector(
+                                                      onTap: () async {
+                                                        SharedPreferences pref =
+                                                            await SharedPreferences
+                                                                .getInstance();
+                                                        pref.setString(
+                                                          "language",
+                                                          fevList[index]
+                                                              ["code"],
+                                                        );
+                                                        getCurrentLanguage();
+                                                        if (mounted) {
+                                                          Navigator.of(context)
+                                                              .push(
+                                                            CupertinoPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      Home(
+                                                                uid: credential
+                                                                    .user!.uid,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                        setState(() {});
+                                                      },
+                                                      child: Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          vertical: 8,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(
+                                                          15,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            10,
+                                                          ),
+                                                          color: ColorConstant
+                                                              .secondPrimaryColor,
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              fevList[index]
+                                                                  ["language"],
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: ColorConstant
+                                                                    .primaryColor,
+                                                              ),
+                                                            ),
+                                                            languageCode ==
+                                                                        fevList[index]
+                                                                            [
+                                                                            "code"] ||
+                                                                    (languageCode ==
+                                                                            null &&
+                                                                        fevList[index]["language"] ==
+                                                                            "English")
+                                                                ? Icon(
+                                                                    Icons
+                                                                        .check_circle,
+                                                                    color: ColorConstant
+                                                                        .primaryColor,
+                                                                  )
+                                                                : const SizedBox(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      vertical: 10,
+                                                    ),
+                                                    child: textToTrans(
+                                                      input: "Other language",
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: ColorConstant
+                                                            .secondPrimaryColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount: remainList.length,
+                                                  physics:
+                                                      const NeverScrollableScrollPhysics(),
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return GestureDetector(
+                                                      onTap: () async {
+                                                        SharedPreferences pref =
+                                                            await SharedPreferences
+                                                                .getInstance();
+                                                        pref.setString(
+                                                          "language",
+                                                          remainList[index]
+                                                              ["code"],
+                                                        );
+                                                        getCurrentLanguage();
+                                                        if (mounted) {
+                                                          Navigator.of(context)
+                                                              .push(
+                                                            CupertinoPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      Home(
+                                                                uid: credential
+                                                                    .user!.uid,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                        setState(() {});
+                                                      },
+                                                      child: Container(
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          vertical: 8,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(
+                                                          15,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            10,
+                                                          ),
+                                                          color: ColorConstant
+                                                              .secondPrimaryColor,
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              remainList[index]
+                                                                  ["language"],
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: ColorConstant
+                                                                    .primaryColor,
+                                                              ),
+                                                            ),
+                                                            languageCode ==
+                                                                    remainList[
+                                                                            index]
+                                                                        ["code"]
+                                                                ? Icon(
+                                                                    Icons
+                                                                        .check_circle,
+                                                                    color: ColorConstant
+                                                                        .primaryColor,
+                                                                  )
+                                                                : const SizedBox(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          ListView.builder(
-                                            shrinkWrap: true,
-                                            itemCount: fevList.length,
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            itemBuilder: (context, index) {
-                                              return GestureDetector(
-                                                onTap: () async {
-                                                  languageCode =
-                                                      fevList[index]["code"];
-                                                  SharedPreferences pref =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  pref.setString("language",
-                                                      languageCode!);
-                                                  setState(() {});
-                                                },
-                                                child: Container(
-                                                  margin: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 8,
-                                                  ),
-                                                  padding: const EdgeInsets.all(
-                                                    15,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      10,
-                                                    ),
-                                                    color: ColorConstant
-                                                        .secondPrimaryColor,
-                                                  ),
-                                                  child: Text(
-                                                    fevList[index]["language"],
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: ColorConstant
-                                                          .primaryColor,
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 10,
-                                              ),
-                                              child: textToTrans(
-                                                input: "Other language",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: ColorConstant
-                                                      .secondPrimaryColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          ListView.builder(
-                                            shrinkWrap: true,
-                                            itemCount: remainList.length,
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            itemBuilder: (context, index) {
-                                              return GestureDetector(
-                                                onTap: () async {
-                                                  languageCode =
-                                                      remainList[index]["code"];
-                                                  SharedPreferences pref =
-                                                      await SharedPreferences
-                                                          .getInstance();
-                                                  pref.setString("language",
-                                                      languageCode!);
-                                                  setState(() {});
-                                                },
-                                                child: Container(
-                                                  margin: const EdgeInsets
-                                                      .symmetric(
-                                                    vertical: 8,
-                                                  ),
-                                                  padding: const EdgeInsets.all(
-                                                    15,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      10,
-                                                    ),
-                                                    color: ColorConstant
-                                                        .secondPrimaryColor,
-                                                  ),
-                                                  child: Text(
-                                                    remainList[index]
-                                                        ["language"],
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: ColorConstant
-                                                          .primaryColor,
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                        );
+                                      },
+                                    );
+                                  }
+                                  FirebaseFirestore.instance
+                                      .collection("user")
+                                      .doc(credential.user!.uid)
+                                      .set(
+                                    {
+                                      "email": credential.user!.email,
+                                      "phone": credential.user!.phoneNumber,
+                                      "photo": credential.user!.photoURL,
+                                      "uid": credential.user!.uid,
+                                    },
                                   );
-                                },
-                              );
-                              // if (controller.key.currentState!.validate()) {
-                              //   try {
-                              //     final credential = await FirebaseAuth.instance
-                              //         .createUserWithEmailAndPassword(
-                              //       email: controller.email.value.text,
-                              //       password: controller.password.value.text,
-                              //     );
-                              //     if (mounted) {
-                              //       showModalBottomSheet<void>(
-                              //         context: context,
-                              //         builder: (BuildContext context) {
-                              //           return Container(
-                              //             padding: const EdgeInsets.all(20),
-                              //             color: ColorConstant.primaryColor,
-                              //             child: Column(
-                              //               mainAxisSize: MainAxisSize.min,
-                              //               children: <Widget>[
-                              //                 Padding(
-                              //                   padding: const EdgeInsets.only(
-                              //                     bottom: 15,
-                              //                   ),
-                              //                   child: textToTrans(
-                              //                     input: 'Select language',
-                              //                     style: TextStyle(
-                              //                       fontSize: 24,
-                              //                       fontWeight: FontWeight.w700,
-                              //                       color: ColorConstant
-                              //                           .secondPrimaryColor,
-                              //                     ),
-                              //                   ),
-                              //                 ),
-                              //                 textToTrans(
-                              //                   input: "Popular language",
-                              //                   style: TextStyle(
-                              //                     fontSize: 18,
-                              //                     fontWeight: FontWeight.w700,
-                              //                     color: ColorConstant
-                              //                         .secondPrimaryColor,
-                              //                   ),
-                              //                 ),
-                              //                 ListView.builder(
-                              //                   shrinkWrap: true,
-                              //                   itemCount: language.length,
-                              //                   itemBuilder: (context, index) {
-                              //                     return Container(
-                              //                       margin:
-                              //                           const EdgeInsets.all(
-                              //                         8,
-                              //                       ),
-                              //                       padding:
-                              //                           const EdgeInsets.all(
-                              //                         15,
-                              //                       ),
-                              //                       decoration: BoxDecoration(
-                              //                         borderRadius:
-                              //                             BorderRadius.circular(
-                              //                           10,
-                              //                         ),
-                              //                         color: ColorConstant
-                              //                             .secondPrimaryColor,
-                              //                       ),
-                              //                       child: textToTrans(
-                              //                         input: language[index]
-                              //                             ["language"],
-                              //                         style: TextStyle(
-                              //                           fontSize: 16,
-                              //                           fontWeight:
-                              //                               FontWeight.w500,
-                              //                           color: ColorConstant
-                              //                               .primaryColor,
-                              //                         ),
-                              //                       ),
-                              //                     );
-                              //                   },
-                              //                 ),
-                              //                 TextButton(
-                              //                   child: const Text(
-                              //                     "Skip",
-                              //                   ),
-                              //                   onPressed: () {
-                              //                     Navigator.of(context).push(
-                              //                       CupertinoPageRoute(
-                              //                         builder: (context) =>
-                              //                             const Login(),
-                              //                       ),
-                              //                     );
-                              //                     Fluttertoast.showToast(
-                              //                       msg: "Sign up successfully",
-                              //                       toastLength:
-                              //                           Toast.LENGTH_SHORT,
-                              //                       gravity:
-                              //                           ToastGravity.BOTTOM,
-                              //                       timeInSecForIosWeb: 1,
-                              //                       backgroundColor:
-                              //                           ColorConstant
-                              //                               .primaryColor,
-                              //                       textColor: ColorConstant
-                              //                           .secondPrimaryColor,
-                              //                       fontSize: 16.0,
-                              //                     );
-                              //                   },
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //           );
-                              //         },
-                              //       );
-                              //     }
-                              //     FirebaseFirestore.instance
-                              //         .collection("user")
-                              //         .doc(credential.user!.uid)
-                              //         .set(
-                              //       {
-                              //         "email": credential.user!.email,
-                              //         "phone": credential.user!.phoneNumber,
-                              //         "photo": credential.user!.photoURL,
-                              //         "uid": credential.user!.uid,
-                              //       },
-                              //     );
-                              //
-                              //     final SharedPreferences prefs =
-                              //         await SharedPreferences.getInstance();
-                              //     prefs.setString(
-                              //       "uid",
-                              //       credential.user!.uid,
-                              //     );
-                              //   } on FirebaseAuthException catch (e) {
-                              //     if (e.code == 'weak-password') {
-                              //       Fluttertoast.showToast(
-                              //         msg: "The password provided is too weak.",
-                              //         toastLength: Toast.LENGTH_SHORT,
-                              //         gravity: ToastGravity.BOTTOM,
-                              //         timeInSecForIosWeb: 1,
-                              //         backgroundColor:
-                              //             ColorConstant.primaryColor,
-                              //         textColor:
-                              //             ColorConstant.secondPrimaryColor,
-                              //         fontSize: 16.0,
-                              //       );
-                              //     } else if (e.code == 'email-already-in-use') {
-                              //       Fluttertoast.showToast(
-                              //         msg:
-                              //             "The account already exists for that email.",
-                              //         toastLength: Toast.LENGTH_SHORT,
-                              //         gravity: ToastGravity.BOTTOM,
-                              //         timeInSecForIosWeb: 1,
-                              //         backgroundColor:
-                              //             ColorConstant.primaryColor,
-                              //         textColor:
-                              //             ColorConstant.secondPrimaryColor,
-                              //         fontSize: 16.0,
-                              //       );
-                              //     }
-                              //   } catch (e) {
-                              //     if (kDebugMode) {
-                              //       print(e);
-                              //     }
-                              //   }
-                              // }
+
+                                  final SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.setString(
+                                    "uid",
+                                    credential.user!.uid,
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  if (e.code == 'weak-password') {
+                                    Fluttertoast.showToast(
+                                      msg: "The password provided is too weak.",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor:
+                                          ColorConstant.primaryColor,
+                                      textColor:
+                                          ColorConstant.secondPrimaryColor,
+                                      fontSize: 16.0,
+                                    );
+                                  } else if (e.code == 'email-already-in-use') {
+                                    Fluttertoast.showToast(
+                                      msg:
+                                          "The account already exists for that email.",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor:
+                                          ColorConstant.primaryColor,
+                                      textColor:
+                                          ColorConstant.secondPrimaryColor,
+                                      fontSize: 16.0,
+                                    );
+                                  }
+                                } catch (e) {
+                                  debugPrint("$e");
+                                }
+                              }
                             },
-                            child: const Text(
-                              "Sign up",
+                            child: textToTrans(
+                              input: "Sign up",
+                              style: null,
                             ),
                           ),
                           Row(
@@ -800,15 +807,16 @@ class _SignUPState extends State<SignUP> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              const Text(
-                                "Already a user?",
+                              textToTrans(
+                                input: "Already a user?",
+                                style: null,
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text(
-                                  "Login",
+                                child: textToTrans(
+                                  input: "Login",
                                   style: TextStyle(
                                     color: ColorConstant.primaryColor,
                                     decoration: TextDecoration.underline,

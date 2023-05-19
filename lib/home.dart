@@ -5,6 +5,8 @@ import 'package:e_commerce/chat_screen.dart';
 import 'package:e_commerce/favorite.dart';
 import 'package:e_commerce/login.dart';
 import 'package:e_commerce/product_detail.dart';
+import 'package:e_commerce/track_order.dart';
+import 'package:e_commerce/translator.dart';
 import 'package:e_commerce/widget/category_container.dart';
 import 'package:e_commerce/widget/color_constant.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'config/language.dart';
 
 final DecorationTween _tween = DecorationTween(
   begin: const BoxDecoration(
@@ -69,6 +73,8 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    languageData();
+    getCurrentLanguage();
     controller.addListener(
       () {
         // if (controller.offset >= controller.position.maxScrollExtent &&
@@ -156,9 +162,208 @@ class _HomeState extends State<Home> {
             //   ),
             // ),
             categoryContainer(
-              onTap: () {},
-              title: "Hello",
+              onTap: () {
+                showModalBottomSheet<void>(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(30),
+                        ),
+                        color: ColorConstant.primaryColor,
+                      ),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            textToTrans(
+                              input: 'Select language',
+                              isCenterText: true,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: ColorConstant.secondPrimaryColor,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
+                                child: textToTrans(
+                                  input: "Popular language",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: ColorConstant.secondPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: fevList.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    SharedPreferences pref =
+                                        await SharedPreferences.getInstance();
+                                    pref.setString(
+                                      "language",
+                                      fevList[index]["code"],
+                                    );
+                                    getCurrentLanguage();
+                                    if (mounted) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    padding: const EdgeInsets.all(
+                                      15,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        10,
+                                      ),
+                                      color: ColorConstant.secondPrimaryColor,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          fevList[index]["language"],
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: ColorConstant.primaryColor,
+                                          ),
+                                        ),
+                                        languageCode ==
+                                                    fevList[index]["code"] ||
+                                                (languageCode == null &&
+                                                    fevList[index]
+                                                            ["language"] ==
+                                                        "English")
+                                            ? Icon(
+                                                Icons.check_circle,
+                                                color:
+                                                    ColorConstant.primaryColor,
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
+                                child: textToTrans(
+                                  input: "Other language",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: ColorConstant.secondPrimaryColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: remainList.length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () async {
+                                    SharedPreferences pref =
+                                        await SharedPreferences.getInstance();
+                                    pref.setString(
+                                      "language",
+                                      remainList[index]["code"],
+                                    );
+                                    getCurrentLanguage();
+                                    if (mounted) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    padding: const EdgeInsets.all(
+                                      15,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        10,
+                                      ),
+                                      color: ColorConstant.secondPrimaryColor,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          remainList[index]["language"],
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: ColorConstant.primaryColor,
+                                          ),
+                                        ),
+                                        languageCode ==
+                                                remainList[index]["code"]
+                                            ? Icon(
+                                                Icons.check_circle,
+                                                color:
+                                                    ColorConstant.primaryColor,
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              title: "Language",
             ),
+            widget.uid != "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
+                ? categoryContainer(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => OrderTrack(
+                            uid: widget.uid,
+                          ),
+                        ),
+                      );
+                    },
+                    title: "Track Order",
+                  )
+                : const SizedBox(),
             categoryContainer(
               onTap: () async {
                 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -364,8 +569,9 @@ class _HomeState extends State<Home> {
                         },
                         isDefaultAction: true,
                         trailingIcon: Icons.edit,
-                        child: const Text(
-                          "Edit product",
+                        child: textToTrans(
+                          input: "Edit product",
+                          style: null,
                         ),
                       ),
                       CupertinoContextMenuAction(
@@ -386,8 +592,9 @@ class _HomeState extends State<Home> {
                         },
                         isDestructiveAction: true,
                         trailingIcon: CupertinoIcons.delete_solid,
-                        child: const Text(
-                          "Delete product",
+                        child: textToTrans(
+                          input: "Delete product",
+                          style: null,
                         ),
                       ),
                     ]
@@ -403,8 +610,9 @@ class _HomeState extends State<Home> {
                         },
                         isDefaultAction: true,
                         trailingIcon: CupertinoIcons.cart_fill,
-                        child: const Text(
-                          "Add to cart",
+                        child: textToTrans(
+                          input: "Add to cart",
+                          style: null,
                         ),
                       ),
                       CupertinoContextMenuAction(
@@ -419,8 +627,9 @@ class _HomeState extends State<Home> {
                         },
                         isDestructiveAction: true,
                         trailingIcon: CupertinoIcons.heart_fill,
-                        child: const Text(
-                          "Add to favorite",
+                        child: textToTrans(
+                          input: "Add to favorite",
+                          style: null,
                         ),
                       ),
                     ],
@@ -489,16 +698,17 @@ class _HomeState extends State<Home> {
                                           ),
                                           child: Row(
                                             children: [
-                                              Text(
-                                                "${ref["salePrice"].toString()}  ",
+                                              textToTrans(
+                                                input:
+                                                    "${ref["salePrice"].toString()}  ",
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   color: ColorConstant
                                                       .secondPrimaryColor,
                                                 ),
                                               ),
-                                              Text(
-                                                ref["mrp"].toString(),
+                                              textToTrans(
+                                                input: ref["mrp"].toString(),
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   color: ColorConstant
@@ -525,8 +735,8 @@ class _HomeState extends State<Home> {
                                                   backgroundColor: ColorConstant
                                                       .secondPrimaryColor,
                                                 ),
-                                                child: Text(
-                                                  "Add to cart",
+                                                child: textToTrans(
+                                                  input: "Add to cart",
                                                   style: TextStyle(
                                                     color: ColorConstant
                                                         .primaryColor,
@@ -623,8 +833,8 @@ class _HomeState extends State<Home> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: ColorConstant.primaryColor,
-              content: Text(
-                "Add to favorite",
+              content: textToTrans(
+                input: "Add to favorite",
                 style: TextStyle(
                   color: ColorConstant.secondPrimaryColor,
                 ),
@@ -652,8 +862,8 @@ class _HomeState extends State<Home> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: ColorConstant.primaryColor,
-              content: Text(
-                "Remove item from favorite",
+              content: textToTrans(
+                input: "Remove item from favorite",
                 style: TextStyle(
                   color: ColorConstant.secondPrimaryColor,
                 ),
@@ -714,8 +924,8 @@ class _HomeState extends State<Home> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: ColorConstant.primaryColor,
-              content: Text(
-                "Cart add successfully",
+              content: textToTrans(
+                input: "Cart add successfully",
                 style: TextStyle(
                   color: ColorConstant.secondPrimaryColor,
                 ),
@@ -739,8 +949,8 @@ class _HomeState extends State<Home> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: ColorConstant.primaryColor,
-              content: Text(
-                "Product already in cart",
+              content: textToTrans(
+                input: "Product already in cart",
                 style: TextStyle(
                   color: ColorConstant.secondPrimaryColor,
                 ),

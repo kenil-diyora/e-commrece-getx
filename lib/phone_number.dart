@@ -1,5 +1,6 @@
 import 'package:e_commerce/controller/phone_number_page_controller.dart';
 import 'package:e_commerce/otp_verify.dart';
+import 'package:e_commerce/translator.dart';
 import 'package:e_commerce/widget/color_constant.dart';
 import 'package:e_commerce/widget/show_loading_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,8 +37,8 @@ class _PhoneNumberState extends State<PhoneNumber> {
                 height: MediaQuery.of(context).size.height / 3,
                 padding: const EdgeInsets.all(50),
                 alignment: Alignment.bottomLeft,
-                child: Text(
-                  "Enter number",
+                child: textToTrans(
+                  input: "Enter number",
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w700,
@@ -121,8 +122,9 @@ class _PhoneNumberState extends State<PhoneNumber> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Obx(
-                                          () => Text(
-                                            "+${controller.countryCode.value}",
+                                          () => textToTrans(
+                                            input:
+                                                "+${controller.countryCode.value}",
                                             style: TextStyle(
                                               color: ColorConstant.primaryColor,
                                             ),
@@ -230,8 +232,9 @@ class _PhoneNumberState extends State<PhoneNumber> {
                                 45,
                               ),
                             ),
-                            child: const Text(
-                              "Send otp",
+                            child: textToTrans(
+                              input: "Send otp",
+                              style: null,
                             ),
                           ),
                         ],

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/controller/otp_page_controller.dart';
+import 'package:e_commerce/translator.dart';
 import 'package:e_commerce/widget/color_constant.dart';
 import 'package:e_commerce/widget/show_loading_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,8 +42,8 @@ class _OtpVerifyState extends State<OtpVerify> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "Enter otp",
+            textToTrans(
+              input: "Enter otp",
               style: TextStyle(
                 fontSize: 45,
                 fontWeight: FontWeight.w700,
@@ -144,8 +145,9 @@ class _OtpVerifyState extends State<OtpVerify> {
                   45,
                 ),
               ),
-              child: const Text(
-                "Verify OTP",
+              child: textToTrans(
+                input: "Verify OTP",
+                style: null,
               ),
             ),
           ],

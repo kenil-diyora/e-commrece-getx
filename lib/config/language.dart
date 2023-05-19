@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 List language = [
   {
     "language": "English",
@@ -35,3 +37,28 @@ List language = [
     "Favorite": false,
   },
 ];
+
+
+List fevList = [];
+List remainList = [];
+
+void languageData() {
+  fevList = language.where(
+        (element) {
+      return element['Favorite'] == true;
+    },
+  ).toList();
+
+  remainList = language.where(
+        (element) {
+      return element['Favorite'] != true;
+    },
+  ).toList();
+}
+
+String? languageCode;
+
+void getCurrentLanguage() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  languageCode = pref.getString("language");
+}
