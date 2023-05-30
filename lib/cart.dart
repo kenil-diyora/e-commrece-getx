@@ -528,6 +528,7 @@ class _CartState extends State<Cart> {
                     "product": i.data()["product"],
                     "qty": i.data()["qty"],
                     "salePrice": i.data()["salePrice"],
+                    "created_at": DateTime.now(),
                   },
                 );
               }

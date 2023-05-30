@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/widget/color_constant.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class OrderTrack extends StatefulWidget {
   final String? uid;
@@ -131,6 +132,17 @@ class _OrderTrackState extends State<OrderTrack> {
                                         ),
                                       ),
                                     ],
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat.yMd()
+                                      .add_jm()
+                                      .format(ref["created_at"].toDate())
+                                      .toString(),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w300,
+                                    color: ColorConstant.secondPrimaryColor,
                                   ),
                                 ),
                               ],

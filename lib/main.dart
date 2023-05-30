@@ -3,11 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-
 import 'app_notification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   Stripe.publishableKey =
       "pk_test_51MzCaWSGodUMKXcxltotmpwHSMxqWdOqYuVZ1nIXAISaHsevioN1yvnRHiIOV9dTNuKJLfvRIGuI3af7sFrVk6zE00mHT7XHqv";
   await Stripe.instance.applySettings();
@@ -22,6 +22,7 @@ void main() async {
   AppNotificationHandler.getInitialMsg();
   AppNotificationHandler.showMsgHandler();
   AppNotificationHandler.onMsgOpen();
+  // FirebaseCrashlytics.instance.crash();
   runApp(
     const ThemeDataDemo(),
   );

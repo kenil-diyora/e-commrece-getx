@@ -405,7 +405,6 @@ class _HomeState extends State<Home> {
             color: ColorConstant.secondPrimaryColor,
           ),
         ),
-        centerTitle: true,
         actions: [
           widget.uid == "tuMQxWrOPFNNiU7IJxx0CracUhJ3"
               ? Row(
