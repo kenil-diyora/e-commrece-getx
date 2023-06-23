@@ -26,8 +26,9 @@ class AddProductController extends GetxController {
     Reference reference =
         FirebaseStorage.instance.ref().child("product").child(fileName);
     if (image == null) {
-      if (context.mounted) {}
-      hideDialog(context);
+      if (context.mounted) {
+        hideDialog(context);
+      }
       return;
     }
     UploadTask uploadTask = reference.putFile(File(image.path));
@@ -37,8 +38,9 @@ class AddProductController extends GetxController {
       imageUrl = await snapshot.ref.getDownloadURL();
       productImage.value = imageUrl;
       if (productImage.value.isNotEmpty) {
-        if (context.mounted) {}
-        hideDialog(context);
+        if (context.mounted) {
+          hideDialog(context);
+        }
       }
     } on FirebaseException catch (e) {
       debugPrint(e.toString());
